@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nourish</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --canvas: #f6f3ee;
+      --card: #fffcf8;
+      --ink: #1c1915;
+      --muted: #6b645c;
+      --line: #e6e0d6;
+      --forest: #1f4d3a;
+      --brass: #a6844a;
+      --serif: "Newsreader", Georgia, serif;
+      --sans: "DM Sans", "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--canvas);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    a { color: var(--forest); }
+    button, textarea { font: inherit; }
+    .app {
+      min-height: 100vh;
+    }
+    .rail {
+      display: none;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      min-height: 56px;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--line);
+      background: var(--canvas);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    .wordmark, .rail-mark {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 500;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .nav-link {
+      color: var(--forest);
+      text-decoration: none;
+      font-weight: 500;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
+    .nav-link[aria-current="page"] {
+      color: var(--ink);
+    }
+    .column {
+      padding: 1.5rem 20px 1rem;
+    }
+    .mark {
+      width: 8px;
+      height: 8px;
+      margin: 0 0 0.85rem;
+      background: var(--brass);
+      transform: rotate(45deg);
+    }
+    h1 {
+      margin: 0 0 0.65rem;
+      font-family: var(--serif);
+      font-weight: 500;
+      font-size: 2.5rem;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    .lede, .promise {
+      margin: 0;
+      color: var(--muted);
+    }
+    .prompts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1.25rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .prompts button {
+      min-height: 44px;
+      padding: 0.55rem 0.85rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--card);
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+    }
+    .prompts button:hover, .prompts button:focus-visible {
+      border-color: var(--forest);
+    }
+    #result h2 {
+      margin: 0 0 1rem;
+      font-family: var(--serif);
+      font-weight: 500;
+      font-size: 1.75rem;
+      line-height: 1.25;
+    }
+    article, .status, .source {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+    article {
+      padding: 1rem 1.05rem 0.9rem;
+      margin: 0 0 0.75rem;
+    }
+    article p { margin: 0 0 0.7rem; }
+    .citation {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      margin: 0.85rem 0 0;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .index {
+      color: var(--brass);
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+    .status {
+      padding: 0.95rem 1.05rem;
+      border-left: 3px solid var(--forest);
+    }
+    .status p { margin: 0; }
+    .searched {
+      margin: 0.85rem 0 0;
+      color: var(--muted);
+    }
+    .searched span {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .composer {
+      display: grid;
+      gap: 0.6rem;
+      margin-top: 1.5rem;
+    }
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+    textarea {
+      width: 100%;
+      min-height: 96px;
+      padding: 0.85rem 0.9rem;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+      color: var(--ink);
+      resize: vertical;
+    }
+    textarea:focus-visible, button:focus-visible, a:focus-visible {
+      outline: 2px solid var(--forest);
+      outline-offset: 2px;
+    }
+    .ask {
+      min-height: 44px;
+      padding: 0.55rem 1.1rem;
+      border: 0;
+      border-radius: 8px;
+      background: var(--forest);
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .ask:disabled { opacity: 0.6; cursor: wait; }
+    .error { margin: 0; color: #8a3b32; }
+    .sources {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+    .source {
+      padding: 1rem 1.05rem;
+    }
+    .source h2 {
+      margin: 0 0 0.25rem;
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+    .source p { margin: 0; color: var(--muted); }
+    .source a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      margin-top: 0.35rem;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .source a:hover { text-decoration: underline; }
+    @media (max-width: 767px) {
+      .composer {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 3;
+        margin: 0;
+        padding: 0.75rem 20px calc(0.75rem + env(safe-area-inset-bottom));
+        background: var(--canvas);
+        border-top: 1px solid var(--line);
+      }
+      .ask { width: 100%; }
+      #ask-view { padding-bottom: 11.5rem; }
+    }
+    @media (min-width: 768px) {
+      .topbar { display: none; }
+      .app {
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr);
+      }
+      .rail {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        padding: 1.75rem 1.25rem;
+        border-right: 1px solid var(--line);
+      }
+      .rail nav {
+        display: grid;
+        gap: 0.15rem;
+      }
+      .rail .nav-link {
+        padding: 0 0.7rem;
+        border-radius: 8px;
+      }
+      .rail .nav-link[aria-current="page"] {
+        background: var(--card);
+      }
+      .column {
+        width: min(760px, 100%);
+        margin: 0 auto;
+        padding: 3rem 32px 2.5rem;
+      }
+      .prompts { flex-wrap: nowrap; }
+      .prompts button { flex: 1 1 0; }
+      .citation {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 0.35rem;
+      }
+      .ask { justify-self: start; }
+      h1 { font-size: 3rem; }
+    }
+  </style>
+</head>
+<body data-view="ask">
+  <div class="app">
+    <aside class="rail">
+      <div>
+        <p class="rail-mark">Nourish</p>
+        <p class="promise">One question at a time.</p>
+      </div>
+      <nav aria-label="Primary">
+        <a class="nav-link" href="#ask" data-view="ask">Ask</a>
+        <a class="nav-link" href="#sources" data-view="sources">Sources</a>
+      </nav>
+    </aside>
+    <div>
+      <header class="topbar">
+        <a class="wordmark" href="#ask">Nourish</a>
+        <a class="nav-link" id="top-link" href="#sources">Sources</a>
+      </header>
+      <main class="column">
+        <section id="ask-view">
+          <div id="empty">
+            <div class="mark" aria-hidden="true"></div>
+            <h1>Nourish</h1>
+            <p class="lede">One question at a time, answered only from official guidance.</p>
+            <ul class="prompts">
+              <li><button type="button" data-prompt="How long can cooked rice stay in the fridge?">How long can cooked rice stay in the fridge?</button></li>
+              <li><button type="button" data-prompt="What does a healthy diet look like?">What does a healthy diet look like?</button></li>
+              <li><button type="button" data-prompt="How should I chill and defrost food safely?">How should I chill and defrost food safely?</button></li>
+            </ul>
+          </div>
+          <section id="result" hidden>
+            <h2 id="asked"></h2>
+            <div id="answer"></div>
+          </section>
+          <form class="composer" id="ask">
+            <label class="visually-hidden" for="question">Question</label>
+            <textarea id="question" name="question" placeholder="Ask about a way of eating, or how long to keep food."></textarea>
+            <p id="form-error" class="error" hidden></p>
+            <button class="ask" type="submit">Ask</button>
+          </form>
+        </section>
+        <section id="sources-view" hidden>
+          <h1>Sources</h1>
+          <div class="sources">
+            <article class="source">
+              <h2>Cold Food Storage Chart</h2>
+              <p>FoodSafety.gov (U.S. Department of Health and Human Services / FDA / USDA), 2023</p>
+              <a href="https://www.foodsafety.gov/food-safety-charts/cold-food-storage-charts">Official source</a>
+            </article>
+            <article class="source">
+              <h2>Healthy diet (Fact sheet)</h2>
+              <p>World Health Organization, 2018</p>
+              <a href="https://www.who.int/docs/default-source/healthy-diet/healthy-diet-fact-sheet-394.pdf">Official source</a>
+            </article>
+            <article class="source">
+              <h2>What are healthy diets? Joint statement</h2>
+              <p>Food and Agriculture Organization of the United Nations and World Health Organization, 2024</p>
+              <a href="https://www.who.int/publications/i/item/9789240101876">Official source</a>
+            </article>
+            <article class="source">
+              <h2>Five keys to safer food manual</h2>
+              <p>World Health Organization, 2006</p>
+              <a href="https://www.who.int/publications/i/item/9789241594639">Official source</a>
+            </article>
+            <article class="source">
+              <h2>The Eatwell Guide booklet</h2>
+              <p>Public Health England (now Office for Health Improvement and Disparities), 2018</p>
+              <a href="https://assets.publishing.service.gov.uk/media/5ba8a50540f0b605084c9501/Eatwell_Guide_booklet_2018v4.pdf">Official source</a>
+            </article>
+            <article class="source">
+              <h2>How to chill, freeze and defrost food safely</h2>
+              <p>Food Standards Agency (UK), 2017</p>
+              <a href="https://www.gov.uk/government/publications/how-to-chill-freeze-and-defrost-food-safely/how-to-chill-freeze-and-defrost-food-safely">Official source</a>
+            </article>
+            <article class="source">
+              <h2>Kitchen Companion: Your Safe Food Handbook</h2>
+              <p>USDA Food Safety and Inspection Service, 2008</p>
+              <a href="https://www.fsis.usda.gov/sites/default/files/media_file/2020-12/Kitchen-Companion.pdf">Official source</a>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script>
+    const form = document.getElementById("ask");
+    const field = document.getElementById("question");
+    const formError = document.getElementById("form-error");
+    const empty = document.getElementById("empty");
+    const result = document.getElementById("result");
+    const asked = document.getElementById("asked");
+    const answer = document.getElementById("answer");
+    const button = form.querySelector("button");
+    const askView = document.getElementById("ask-view");
+    const sourcesView = document.getElementById("sources-view");
+    const topLink = document.getElementById("top-link");
+    const navLinks = document.querySelectorAll("[data-view]");
+
+    function showView(name) {
+      const sources = name === "sources";
+      document.body.dataset.view = sources ? "sources" : "ask";
+      askView.hidden = sources;
+      sourcesView.hidden = !sources;
+      topLink.textContent = sources ? "Ask" : "Sources";
+      topLink.href = sources ? "#ask" : "#sources";
+      for (const link of navLinks) {
+        if (link.dataset.view === (sources ? "sources" : "ask")) {
+          link.setAttribute("aria-current", "page");
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      }
+    }
+
+    window.addEventListener("hashchange", () => {
+      showView(location.hash === "#sources" ? "sources" : "ask");
+    });
+    showView(location.hash === "#sources" ? "sources" : "ask");
+
+    for (const prompt of document.querySelectorAll("[data-prompt]")) {
+      prompt.addEventListener("click", () => {
+        field.value = prompt.dataset.prompt;
+        form.requestSubmit();
+      });
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const question = field.value;
+      if (!question.trim()) {
+        formError.hidden = false;
+        formError.textContent = "Enter a question.";
+        return;
+      }
+      formError.hidden = true;
+      button.disabled = true;
+      try {
+        const response = await fetch("/question", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question }),
+        });
+        const payload = await response.json();
+        if (!response.ok) {
+          formError.hidden = false;
+          formError.textContent = payload.error || "The question could not be sent.";
+          return;
+        }
+        show(question, payload);
+      } catch (err) {
+        formError.hidden = false;
+        formError.textContent = "The question could not be sent.";
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    function show(question, payload) {
+      empty.hidden = true;
+      asked.textContent = question;
+      answer.replaceChildren();
+      field.value = "";
+      if (payload.stage === "answered") {
+        payload.sections.forEach((section, index) => {
+          const block = document.createElement("article");
+          for (const claim of section.claims) {
+            const line = document.createElement("p");
+            line.textContent = claim;
+            block.appendChild(line);
+          }
+          const cite = document.createElement("p");
+          cite.className = "citation";
+          const mark = document.createElement("span");
+          mark.className = "index";
+          mark.textContent = String(index + 1);
+          const link = document.createElement("a");
+          link.href = section.citation.source_url;
+          link.textContent = section.citation.document_name;
+          const meta = document.createElement("span");
+          meta.textContent = section.citation.publisher + ", " + section.citation.year;
+          cite.append(mark, link, meta);
+          block.appendChild(cite);
+          answer.appendChild(block);
+        });
+      } else if (payload.stage === "not_in_corpus") {
+        const note = document.createElement("div");
+        note.className = "status";
+        const lead = document.createElement("p");
+        const message = payload.message || "";
+        const marker = "Documents searched:";
+        const splitAt = message.indexOf(marker);
+        lead.textContent = splitAt === -1 ? message : message.slice(0, splitAt).trim();
+        note.appendChild(lead);
+        if (splitAt !== -1) {
+          const searched = document.createElement("p");
+          searched.className = "searched";
+          const label = document.createElement("span");
+          label.textContent = "Documents searched";
+          searched.append(label, document.createTextNode(message.slice(splitAt + marker.length).trim()));
+          note.appendChild(searched);
+        }
+        answer.appendChild(note);
+      } else {
+        const note = document.createElement("div");
+        note.className = "status";
+        const line = document.createElement("p");
+        line.textContent = payload.message;
+        note.appendChild(line);
+        answer.appendChild(note);
+      }
+      result.hidden = false;
+    }
+  </script>
+</body>
+</html>

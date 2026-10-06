@@ -1,0 +1,65 @@
+[
+  {
+    "document_id": "cold-food-storage",
+    "document_name": "Cold Food Storage Chart",
+    "publisher": "FoodSafety.gov (U.S. Department of Health and Human Services / FDA / USDA)",
+    "year": 2023,
+    "source_url": "https://www.foodsafety.gov/food-safety-charts/cold-food-storage-charts",
+    "retrieval_date": "2026-10-05",
+    "kind": "food_safety"
+  },
+  {
+    "document_id": "who-healthy-diet",
+    "document_name": "Healthy diet (Fact sheet)",
+    "publisher": "World Health Organization",
+    "year": 2018,
+    "source_url": "https://www.who.int/docs/default-source/healthy-diet/healthy-diet-fact-sheet-394.pdf",
+    "retrieval_date": "2026-10-05",
+    "kind": "nutrition"
+  },
+  {
+    "document_id": "fao-who-healthy-diets",
+    "document_name": "What are healthy diets? Joint statement",
+    "publisher": "Food and Agriculture Organization of the United Nations and World Health Organization",
+    "year": 2024,
+    "source_url": "https://www.who.int/publications/i/item/9789240101876",
+    "retrieval_date": "2026-10-05",
+    "kind": "nutrition"
+  },
+  {
+    "document_id": "who-five-keys",
+    "document_name": "Five keys to safer food manual",
+    "publisher": "World Health Organization",
+    "year": 2006,
+    "source_url": "https://www.who.int/publications/i/item/9789241594639",
+    "retrieval_date": "2026-10-05",
+    "kind": "food_safety"
+  },
+  {
+    "document_id": "eatwell-guide",
+    "document_name": "The Eatwell Guide booklet",
+    "publisher": "Public Health England (now Office for Health Improvement and Disparities)",
+    "year": 2018,
+    "source_url": "https://assets.publishing.service.gov.uk/media/5ba8a50540f0b605084c9501/Eatwell_Guide_booklet_2018v4.pdf",
+    "retrieval_date": "2026-10-05",
+    "kind": "nutrition"
+  },
+  {
+    "document_id": "fsa-chill",
+    "document_name": "How to chill, freeze and defrost food safely",
+    "publisher": "Food Standards Agency (UK)",
+    "year": 2017,
+    "source_url": "https://www.gov.uk/government/publications/how-to-chill-freeze-and-defrost-food-safely/how-to-chill-freeze-and-defrost-food-safely",
+    "retrieval_date": "2026-10-05",
+    "kind": "food_safety"
+  },
+  {
+    "document_id": "kitchen-companion",
+    "document_name": "Kitchen Companion: Your Safe Food Handbook",
+    "publisher": "USDA Food Safety and Inspection Service",
+    "year": 2008,
+    "source_url": "https://www.fsis.usda.gov/sites/default/files/media_file/2020-12/Kitchen-Companion.pdf",
+    "retrieval_date": "2026-10-05",
+    "kind": "food_safety"
+  }
+]

@@ -1,0 +1,56 @@
+Problem Statement
+Dietary Guidance RAG Chatbot
+Milestone 2, Week 7. Source: https://github.com/saksham20189575/health-rag/blob/main/docs/problemStatement.md
+
+Brief
+Build the prototype of a chatbot that answers questions about food, nutrition and food safety. Put a retrieval layer under the chatbot, so it answers only from official public dietary guidance documents. Three properties are non-negotiable.
+1. Grounded answers only. Every answer is produced from retrieved chunks of the corpus, never from the model's general knowledge.
+2. Every claim carries a citation. Each statement points back to the document it came from: name, publisher, year, and link.
+3. Honest refusal. When the guidance does not cover a question, the assistant says so explicitly rather than guessing.
+In the final project this becomes the service that answers "is this a reasonable way to eat" and "how long can I keep this in the fridge".
+Health authorities already publish long, careful PDFs on exactly this. There is no API, and almost nobody reads them end to end. That gap is what the retrieval layer is for.
+Nutrient numbers for individual foods (calories, grams of protein in 100 g of chicken, and the like) are a different kind of data. They come from a structured database in Milestone 3. They do not belong in this corpus or in this chatbot's answers.
+
+How the text is loaded
+The seven documents below are the corpus. Their prose is already extracted into structural blocks so a question can send the model a few relevant blocks instead of a whole PDF. That file is only a token saving. It does not change the documents, the citations, or the behaviour above.
+https://raw.githubusercontent.com/saksham20189575/health-data/main/blocks.jsonl
+Each line is one block (heading, paragraph, list item, or table) with document_id, ordinal, type, text, and heading_path. Publisher, year, and source URL are not on the blocks. Join them from the catalog below. The citation link is the official source URL, not the block-file URL. Record the retrieval date as the date you download blocks.jsonl.
+
+Corpus
+Use these seven public documents. Documents 2, 3, and 5 are nutrition guidance. Documents 1, 4, 6, and 7 are food-safety guidance. The nutrition documents discuss fats and oils. The food-safety documents discuss storage times, chilling, and leftovers. Document 1 is largely a table of food type to refrigerator and freezer time, so it is the direct test of the chunking rule: a fixed-size splitter will cut table rows apart.
+
+1. document_id cold-food-storage. Cold Food Storage Chart. FoodSafety.gov (U.S. Department of Health and Human Services / FDA / USDA), 2023. https://www.foodsafety.gov/food-safety-charts/cold-food-storage-charts
+2. document_id who-healthy-diet. Healthy diet (Fact sheet). World Health Organization, 2018. https://www.who.int/docs/default-source/healthy-diet/healthy-diet-fact-sheet-394.pdf
+3. document_id fao-who-healthy-diets. What are healthy diets? Joint statement. Food and Agriculture Organization of the United Nations and World Health Organization, 2024. https://www.who.int/publications/i/item/9789240101876
+4. document_id who-five-keys. Five keys to safer food manual. World Health Organization, 2006. https://www.who.int/publications/i/item/9789241594639
+5. document_id eatwell-guide. The Eatwell Guide booklet. Public Health England (now Office for Health Improvement and Disparities), 2018. https://assets.publishing.service.gov.uk/media/5ba8a50540f0b605084c9501/Eatwell_Guide_booklet_2018v4.pdf
+6. document_id fsa-chill. How to chill, freeze and defrost food safely. Food Standards Agency (UK), 2017. https://www.gov.uk/government/publications/how-to-chill-freeze-and-defrost-food-safely/how-to-chill-freeze-and-defrost-food-safely
+7. document_id kitchen-companion. Kitchen Companion: Your Safe Food Handbook. USDA Food Safety and Inspection Service, 2008. https://www.fsis.usda.gov/sites/default/files/media_file/2020-12/Kitchen-Companion.pdf
+
+Store publisher, year, source URL, and retrieval date with every document. Written prose only. Anything with a clean API behind it does not belong here.
+
+What you build
+1. Corpus. The seven documents above. Load their text from blocks.jsonl. Do not add other documents. Attach the catalog fields to every chunk through document_id.
+2. Chunking. Every chunk carries the document name, publisher, year, and section heading. These documents are full of tables and numbered recommendations. Fixed-size chunking will cut them in half. The blocks are already split on structure (heading_path, and tables kept as one block with header and rows). Grouping consecutive blocks that share a heading_path is allowed when a single block is too small to answer from. The Cold Food Storage Chart table is one large block; decide whether to keep it whole or split it by row. Say in the README what you chose and what it cost you.
+3. Retrieval. A vector index over the chunks. It must support retrieval across all documents and retrieval filtered to one named document (one document_id). At answer time, send the model only the retrieved chunks.
+4. Answer layer. The assistant answers only from retrieved chunks. Every claim carries a citation showing document name, publisher, year, and a link to the official source URL.
+5. Cross-document questions. Some questions are addressed by more than one document. Example: cooking oil, where a nutrition document (dietary fat) and a food-safety document (storage, chilling, leftovers) can both have something to say. Answer per document, each with its own citations. Never blend two sources into one claim about what "the guidelines say". Sources may disagree or cover different aspects; keep them distinct.
+6. Two kinds of refusal. You need both, and they must be distinguishable.
+Not in the corpus: When the retrieved chunks do not contain the answer, the assistant says the guidance does not cover the question and names what it searched (which documents, or the full corpus).
+Out of scope by design: No medical advice, no calorie or weight targets, nothing about what anyone should weigh. The assistant declines and points the person to a qualified professional. Enforce this in code for this project, as a guardrail, not by prompt wording alone. It does not depend on any previous milestone.
+
+Deliverables
+1. Corpus. The seven documents, each stored with publisher, year, source URL, and retrieval date.
+2. Chunking. Structure-aware. Each chunk tagged with document name, publisher, year, and section heading. Trade-off written in the README.
+3. Retrieval. Vector index. All-document search and single-document filtered search.
+4. Answer layer. Answers only from retrieved chunks. Every claim cited with name, publisher, year, and link.
+5. Cross-document handling. Per-document answers with separate citations. Never merge sources into one claim.
+6a. Refusal, not in corpus. Say the guidance does not cover it, and name what was searched.
+6b. Refusal, out of scope. Decline medical, calorie, and weight questions. Refer to a professional. Enforced in code.
+
+Principles
+Groundedness over helpfulness. A correct "the guidance doesn't cover this" beats a plausible guess.
+Traceability. A reader can follow any claim back to a specific document, publisher, year, and URL.
+Source integrity. Distinct authorities stay distinct. The system never manufactures a consensus.
+Safety by construction. No medical advice and no weight targets are code-level guardrails, not suggestions to the model.
+Right data, right place. Prose guidance lives here. Per-food nutrient numbers live in the Milestone 3 database.
