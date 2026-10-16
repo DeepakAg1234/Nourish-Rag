@@ -246,11 +246,11 @@ def _inject_css() -> None:
           color: #1c1915;
         }}
         .stMarkdown p.nourish-headline {{
-          margin: 0 0 0.45rem;
+          margin: 0 0 0.55rem;
           font-family: Newsreader, Georgia, serif;
-          font-size: 2rem;
+          font-size: 1.875rem;
           font-weight: 500;
-          line-height: 1.15;
+          line-height: 1.2;
           letter-spacing: -0.02em;
           color: #1c1915;
         }}
@@ -308,8 +308,8 @@ def _render_sidebar() -> None:
         st.markdown(
             """
             <ul class="nourish-trust">
-              <li>Cited answers</li>
-              <li>No guessing from general knowledge</li>
+              <li>The document behind every claim</li>
+              <li>Seven official health guides</li>
               <li>No medical or weight advice</li>
             </ul>
             """,
@@ -338,8 +338,8 @@ def _render_landing() -> None:
         """
         <div class="nourish-landing">
           <p class="nourish-kicker">Nourish</p>
-          <p class="nourish-headline">Official food guidance, with the source on every claim.</p>
-          <p class="nourish-proof">Answers come from WHO, FAO, FDA, USDA, the UK Food Standards Agency, and Public Health England. One question at a time. If these documents do not cover it, Nourish says so.</p>
+          <p class="nourish-headline">General food advice guesses.<br>This quotes the agency that published the rule.</p>
+          <p class="nourish-proof">Don't get fooled by general advice.<br>If WHO, FAO, FDA, USDA, the UK Food Standards Agency,<br>or Public Health England didn't publish it, Nourish won't say it.</p>
         </div>
         """,
         unsafe_allow_html=True,
