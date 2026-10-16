@@ -32,6 +32,10 @@ Two refusals are different replies. Out of scope is a fixed decline that points 
 
 ## Key architectural decisions
 
+![Indexing pipeline and search pipeline](docs/pipeline.png)
+
+The top row is the one-time build: the seven-document snapshot is ingested, chunked, embedded locally, and stored in Chroma. The bottom row is one question. The scope guard runs before any search. Retrieval then keeps a capped set of chunks, the chat model may use only those chunks, and the citation check runs before the reply is shown.
+
 ### Chunking follows document structure
 
 `src/chunk.py` keeps consecutive paragraphs and list items under one `heading_path` as one chunk. A heading is not its own chunk. The cap is about 500 tokens (`TOKEN_LIMIT`, estimated at four characters per token). Only the long heading groups split, and a split falls between blocks. When a flush lands in the middle of a list, the next chunk repeats the section heading and the paragraph that introduced the list.
