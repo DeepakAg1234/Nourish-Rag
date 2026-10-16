@@ -1,5 +1,7 @@
 # Dietary Guidance RAG Chatbot
 
+https://nourish-rag.streamlit.app/
+
 Prototype chatbot that answers food, nutrition, and food-safety questions from seven official guidance documents.
 
 ## Business value
