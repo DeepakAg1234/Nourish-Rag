@@ -21,7 +21,6 @@ _HISTORY_LIMIT = 5
 _CATALOG_PATH = Path(__file__).resolve().parent / "data" / "catalog.json"
 
 _PROMPTS = (
-    "How long can cooked rice stay in the fridge?",
     "What does a healthy diet look like?",
     "How should I chill and defrost food safely?",
 )
@@ -367,7 +366,7 @@ def _render_landing() -> None:
     if st.session_state.error:
         st.error(st.session_state.error)
     with st.container(key="prompts"):
-        columns = st.columns(3, gap="small")
+        columns = st.columns(len(_PROMPTS), gap="small")
         for column, prompt in zip(columns, _PROMPTS, strict=True):
             with column:
                 if st.button(prompt, key=f"prompt-{prompt}", width="stretch", wrap=True):
