@@ -225,7 +225,7 @@ def _inject_css() -> None:
           text-transform: uppercase;
         }}
         [data-testid="stMainBlockContainer"] {{
-          max-width: 760px;
+          max-width: 920px;
         }}
         .stMain:has(.nourish-landing) [data-testid="stMainBlockContainer"] {{
           min-height: 100vh;
@@ -253,6 +253,9 @@ def _inject_css() -> None:
           line-height: 1.2;
           letter-spacing: -0.02em;
           color: #1c1915;
+        }}
+        .nourish-landing p.nourish-headline {{
+          font-size: 2.25rem;
         }}
         .stMarkdown p.nourish-proof {{
           margin: 0 0 0.9rem;
@@ -339,7 +342,7 @@ def _render_landing() -> None:
         <div class="nourish-landing">
           <p class="nourish-kicker">Nourish</p>
           <p class="nourish-headline">General food advice guesses.<br>This quotes the agency that published the rule.</p>
-          <p class="nourish-proof">Don't get fooled by general advice.<br>If WHO, FAO, FDA, USDA, the UK Food Standards Agency,<br>or Public Health England didn't publish it, Nourish won't say it.</p>
+          <p class="nourish-proof">Don't get fooled by general advice. If WHO, FAO, FDA, USDA, the UK Food Standards Agency,<br>or Public Health England didn't publish it, Nourish won't say it.</p>
         </div>
         """,
         unsafe_allow_html=True,
